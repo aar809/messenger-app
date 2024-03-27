@@ -92,6 +92,7 @@ app.get("/users/:userId", async (req, res) => {
     const loggedInUserId = req.params.userId;
     User.find({ _id: { $ne: loggedInUserId } }).then((users) => {
         res.status(200).json(users)
+        console.log("users", users);
     }).catch((error) => {
         console.log("Error fetching users", error);
         res.status(500).json({ message: "Error fetching users" })
