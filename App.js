@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import StackNavigator from './StackNavigator';
 import { UserContext } from './UserContext';
 
+console.log("Hi")
+
 export default function App() {
   return (
     <>
