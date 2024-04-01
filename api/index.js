@@ -98,3 +98,38 @@ app.get("/users/:userId", async (req, res) => {
         res.status(500).json({ message: "Error fetching users" })
     })
 })
+
+//endpoint to send request to a user
+app.post("/friend-request", async (req, res) => {
+    const { currentUserId, selectedUserId } = req.body;
+    console.log("server function", currentUserId, selectedUserId);
+    try {
+        // update the recipient's friendRequests array
+        await User.findByIdAndUpdate(selectedUserId, {
+            $push: { friendRequests: currentUserId }
+        });
+
+        // update the sender's sentFriendRequests array
+        await User.findByIdAndUpdate(currentUserId, {
+            $push: { sentFriendRequests: selectedUserId }
+        });
+
+        res.sendStatus(200);
+    } catch (error) {
+        res.sendStatus(500);
+    }
+})
+
+// endpoint to show all friend requests of a user
+app.get("/friend-request/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+        // fetch the user document based on User Id
+        const user = await User.findById(userId).populate("friendRequests", "name email image").lean();
+        const friendRequests = user.friendRequests;
+        res.json(friendRequests);
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+})
