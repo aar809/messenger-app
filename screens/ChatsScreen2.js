@@ -1,0 +1,21 @@
+// ChatsScreen2.js
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+const ChatsScreen2 = () => {
+    return (
+        <View style={styles.container}>
+            <Text>ChatsScreen2</Text>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
+
+export default ChatsScreen2;
