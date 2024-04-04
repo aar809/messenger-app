@@ -9,21 +9,21 @@ const LoginScreen = () => {
     const [password, setPassword] = useState("")
     const navigation = useNavigation()
 
-    // useEffect(() => {
-    //     const checkLoginStatus = async () => {
-    //         try {
-    //             const token = await AsyncStorage.getItem("authToken");
-    //             if (token) {
-    //                 navigation.replace("Home");
-    //             } else {
-    //                 //token not found, show login screen itself
-    //             }
-    //         } catch (error) {
-    //             console.log("Error checking login status", error);
-    //         }
-    //     };
-    //     checkLoginStatus();
-    // }, [])
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const token = await AsyncStorage.getItem("authToken");
+                if (token) {
+                    navigation.replace("Home");
+                } else {
+                    //token not found, show login screen itself
+                }
+            } catch (error) {
+                console.log("Error checking login status", error);
+            }
+        };
+        checkLoginStatus();
+    }, [])
 
     const handleLogin = () => {
         const user = {
