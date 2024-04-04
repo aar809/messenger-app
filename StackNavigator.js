@@ -8,6 +8,7 @@ import HomeScreen from './screens/HomeScreen';
 import FriendsScreen from './screens/FriendsScreen';
 // import ChatsScreen from './screens/ChatsScreen';
 import ChatsScreen2 from './screens/ChatsScreen2';
+import ChatMessagesScreen from './screens/ChatMessagesScreen';
 
 const StackNavigator = () => {
 
@@ -22,6 +23,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Friends" component={FriendsScreen} />
                 <Stack.Screen name="Chats2" component={ChatsScreen2} />
+                <Stack.Screen name="Messages" component={ChatMessagesScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     )

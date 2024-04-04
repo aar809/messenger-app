@@ -139,7 +139,7 @@ app.post("/friend-request/accept", async (req, res) => {
     console.log("made it here")
     try {
         const { senderId, recipientId } = req.body;
-        console.log(senderId, recipientId)
+        console.log(senderId, recipientId);
         //retrieve the documents of the sender and recipient
         const sender = await User.findById(senderId);
         const recipient = await User.findById(recipientId);
@@ -160,6 +160,22 @@ app.post("/friend-request/accept", async (req, res) => {
         res.status(200).json({ message: "Friend request accepted successfully" })
     } catch (error) {
         console.log("error", error)
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+})
+
+//endpoint to get all friends of a user
+app.get("/accepted-friends/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId).populate(
+            "friends",
+            "name email image"
+        )
+        const acceptedFriends = user.friends;
+        res.json(acceptedFriends)
+    } catch (error) {
+        console.log("error", error);
         res.status(500).json({ message: "Internal Server Error" })
     }
 })
