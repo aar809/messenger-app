@@ -22,7 +22,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Friends" component={FriendsScreen} />
-                <Stack.Screen name="Chats2" component={ChatsScreen2} />
+                <Stack.Screen name="Chats" component={ChatsScreen2} />
                 <Stack.Screen name="Messages" component={ChatMessagesScreen} />
             </Stack.Navigator>
         </NavigationContainer>

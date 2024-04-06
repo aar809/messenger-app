@@ -23,7 +23,7 @@ const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
             });
             if (response.ok) {
                 setFriendRequests(friendRequests.filter((obj) => obj._id !== friendRequestId))
-                navigation.navigate("Chats2");
+                navigation.navigate("Chats");
             }
         } catch (error) {
             console.log("error accepting frd request", error)
