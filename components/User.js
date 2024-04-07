@@ -1,10 +1,49 @@
 import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { UserType } from '../UserContext';
 
 const User = ({ item }) => {
     const { userId, setUserId } = useContext(UserType)
     const [requestSent, setRequestSent] = useState(false)
+    const [friendRequests, setFriendRequests] = useState([]);
+    const [userFriends, setUserFriends] = useState([])
+
+    useEffect(() => {
+        const fetchFriendRequests = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/friend-request/sent/${userId}`);
+                const data = await response.json();
+                if (response.ok) {
+                    console.log("Friend requests", data)
+                    setFriendRequests(data)
+                } else {
+                    console.log("Error fetching friend requests", response.status.message)
+                }
+            } catch (error) {
+                console.log("Error fetching friend requests", error)
+            }
+        }
+        fetchFriendRequests();
+    }, [])
+
+    useEffect(() => {
+        const fetchUserFriends = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/friends/${userId}`);
+                const data = await response.json();
+                if (response.ok) {
+                    console.log("User friends", data)
+                    setUserFriends(data)
+                } else {
+                    console.log("Error fetching user friends", response.status.message)
+                }
+            } catch (error) {
+                console.log("Error fetching user friends", error)
+            }
+        }
+        fetchUserFriends();
+    }, [])
+
     const sendFriendRequest = async (currentUserId, selectedUserId) => {
         console.log("pressed")
         try {
@@ -22,7 +61,8 @@ const User = ({ item }) => {
             console.log("Error sending friend request", error)
         }
     }
-
+    console.log("User friends:", userFriends)
+    console.log("Friend requests:", friendRequests)
     return (
         <Pressable style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
             {/* <Text>User here</Text> */}
@@ -35,12 +75,23 @@ const User = ({ item }) => {
                 <Text> {item?.email}</Text>
 
             </View>
-            <Pressable
-                onPress={() => sendFriendRequest(userId, item._id)}
-                style={{ backgroundColor: "#567189", padding: 10, borderRadius: 6, width: 105 }}>
-                <Text style={{ textAlign: "center", color: "white", fontSize: 13 }}> Add Friend</Text>
-            </Pressable>
 
+            {userFriends.includes(item._id) ? (
+                <Pressable style={{ backgroundColor: "green", padding: 10, borderRadius: 6, width: 105 }}>
+                    <Text style={{ textAlign: "center", color: "white", fontSize: 13 }}> Friends</Text>
+                </Pressable>
+            ) : requestSent || friendRequests.some((obj) => obj.senderId === item._id) ? (
+                <Pressable
+                    onPress={() => sendFriendRequest(userId, item._id)}
+                    style={{ backgroundColor: "gray", padding: 10, borderRadius: 6, width: 105 }}>
+                    <Text style={{ textAlign: "center", color: "white", fontSize: 13 }}> Request Sent</Text>
+                </Pressable>) :
+                <Pressable
+                    onPress={() => sendFriendRequest(userId, item._id)}
+                    style={{ backgroundColor: "#567189", padding: 10, borderRadius: 6, width: 105 }}>
+                    <Text style={{ textAlign: "center", color: "white", fontSize: 13 }}> Add Friend</Text>
+                </Pressable>
+            }
 
         </Pressable>
 
