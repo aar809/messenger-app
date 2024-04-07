@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 const passport = require("passport")
+const multer = require("multer")
+//for user authentication
 const LocalStrategy = require("passport-local").Strategy
 
 const app = express();
@@ -177,5 +179,74 @@ app.get("/accepted-friends/:userId", async (req, res) => {
     } catch (error) {
         console.log("error", error);
         res.status(500).json({ message: "Internal Server Error" })
+    }
+})
+
+//Configure multer for handling file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'files/');//specify the desired dest folder;
+    },
+    filename: function (req, file, cb) {
+        //Generate a unique name for the file
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + 'file.originalname');
+    }
+});
+
+
+const upload = multer({ storage: storage })
+//endpoint to post Messages and store them in the DB
+app.post("/messages", upload.single("imageFile"), async (req, res) => {
+    try {
+        const { senderId, recipientId, messageType, messageText } = req.body;
+
+        const newMessage = new Message({
+            senderId,
+            recipientId,
+            messageType,
+            message: messageText,
+            timeStamp: new Date(),
+            imageUrl: messageType === "image"
+        });
+        // Save the new message to the database
+        await newMessage.save();
+        res.status(200).json({ message: "Message sent successfully" })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" })
+
+    }
+});
+//endpoint to get the user details to design the chat room header
+app.get("/user/:userId", async (req, res) => {
+    // console.log("made it here")
+    try {
+        const { userId } = req.params;
+        //fetch the user data from the user ID
+        const recipientId = await User.findById(userId);
+        res.json(recipientId)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" })
+    }
+
+});
+
+//endpoint to get all messages between two users
+app.get("/messages/:senderId/:recipientId", async (req, res) => {
+    try {
+        const { senderId, recipientId } = req.params;
+        // fetch all messages between the sender and recipient
+        const messages = await Message.find({
+            $or: [
+                { senderId: senderId, recipientId: recipientId },
+                { senderId: recipientId, recipientId: senderId }
+            ]
+        }).populate("senderId", "_id name");
+        res.json(messages);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 })
