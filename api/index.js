@@ -190,7 +190,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         //Generate a unique name for the file
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + 'file.originalname');
+        cb(null, uniqueSuffix + '-' + file.originalname);
     }
 });
 
@@ -207,7 +207,7 @@ app.post("/messages", upload.single("imageFile"), async (req, res) => {
             messageType,
             message: messageText,
             timeStamp: new Date(),
-            imageUrl: messageType === "image"
+            imageUrl: messageType === "image" ? req.file.path : null
         });
         // Save the new message to the database
         await newMessage.save();
@@ -248,5 +248,20 @@ app.get("/messages/:senderId/:recipientId", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+
+// endpoint to delete the messages!
+app.post("/delete-messages", async (req, res) => {
+    try {
+        const { messages } = req.body;
+        if (!Array.isArray(messages) || messages.length === 0) {
+            return res.status(400).json({ error: "Invalid request" })
+        }
+        await Message.deleteMany({ _id: { $in: messages } });
+        res.status(200).json({ message: "Messages deleted successfully" })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" })
     }
 })

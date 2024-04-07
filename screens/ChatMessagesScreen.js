@@ -7,6 +7,10 @@ import { UserType } from '../UserContext';
 import { useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+// import { ImagePicker } from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
+import { FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const ChatMessagesScreen = () => {
     const [showEmojiSelector, setShowEmojiSelector] = useState(false);
@@ -18,6 +22,7 @@ const ChatMessagesScreen = () => {
     const route = useRoute();
     const { recipientId } = route.params;
     const [messages, setMessages] = useState([]);
+    const [selectedMessages, setSelectedMessages] = useState([]);
 
     const fetchMessages = async () => {
         try {
@@ -89,27 +94,90 @@ const ChatMessagesScreen = () => {
         }
     }
 
-    console.log("messages:", messages);
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: "",
             headerLeft: () => (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                     <Ionicons onPress={() => navigation.goBack()} name="arrow-back" size={24} color="black" />
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Image style={{ width: 30, height: 30, borderRadius: 15, resizeMode: "cover" }} source={{ uri: recipientData?.image }} />
-                        <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold" }}>{recipientData?.name}</Text>
-                    </View>
+                    {selectedMessages.length > 0 ? (
+                        <View>
+                            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                                {String(selectedMessages.length)} selected
+                            </Text>
+                        </View>
+                    ) : (
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <Image style={{ width: 30, height: 30, borderRadius: 15, resizeMode: "cover" }} source={{ uri: recipientData?.image }} />
+                            <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold" }}>{recipientData?.name}</Text>
+                        </View>)}
 
                 </View>
             ),
+            headerRight: () => selectedMessages.length > 0 ? (
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <Ionicons name="arrow-redo-sharp" size={24} color="black" />
+                    <Ionicons name="arrow-undo-sharp" size={24} color="black" />
+                    <FontAwesome name="star" size={24} color="black" />
+                    <MaterialIcons onPress={() => deleteMessages(selectedMessages)} name="delete" size={24} color="black" />
+                </View>
+            ) : null
         })
-    }, [recipientData])
+    }, [recipientData, selectedMessages])
 
+    const deleteMessages = async (messageIds) => {
+        try {
+            const response = await fetch("http://localhost:8000/delete-messages", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    messages: messageIds
+                })
+            });
+            if (response.ok) {
+                setSelectedMessages((previousMessages) => previousMessages.filter((id) => !messageIds.includes(id)));
+                fetchMessages();
+            } else {
+                console.log("Error deleting messages", response.status.message)
+            }
+        } catch (error) {
+            console.log("Error deleting messages", error)
+        }
+    }
     const formatTime = (timeStamp) => {
         const options = { hour: "numeric", minute: "numeric" }
         return new Date(timeStamp).toLocaleTimeString("en-US", options)
     }
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            handleSend("image", result.assets[0].uri)
+            // setImage(result.assets[0].uri);
+        }
+    };
+
+    const handleSelectMessage = (message) => {
+        //check if message is already selected
+        const isSelected = selectedMessages.includes(message._id);
+        if (isSelected) {
+            setSelectedMessages((previousMessages) => previousMessages.filter((id) => id !== message._id))
+        } else {
+            setSelectedMessages((previousMessages) => [...previousMessages, message._id])
+        }
+    }
+    console.log("selectedMessages:", selectedMessages);
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
@@ -117,6 +185,42 @@ const ChatMessagesScreen = () => {
                 {/* All the chat messages go here */}
                 {messages.map((item, index) => {
                     if (item.messageType === "text") {
+                        const isSelected = selectedMessages.includes(item._id);
+                        return (
+                            <Pressable
+                                onLongPress={() => handleSelectMessage(item)}
+                                key={index}
+                                style={[
+                                    item?.senderId?._id === userId ? { alignSelf: "flex-end", backgroundColor: "#DCF8C6", padding: 6, maxWidth: "60%", borderRadius: 7, margin: 10 }
+                                        : {
+                                            alignSelf: "flex-start",
+                                            backgroundColor: "white",
+                                            padding: 8,
+                                            margin: 10,
+                                            borderRadius: 7,
+                                            maxWidth: "60%"
+                                        },
+                                    isSelected && { width: "200%", backgroundColor: "#F0FFFF" }
+                                ]}>
+                                <Text style={{ fontSize: 13, textAlign: isSelected ? "right" : "left" }}>
+                                    {item?.message}
+                                </Text>
+                                <Text style={{
+                                    textAlign: "right",
+                                    fontSize: 9,
+                                    color: "grey",
+                                    marginTop: 5
+                                }}>
+                                    {formatTime(item.timeStamp)} </Text>
+                            </Pressable>
+                        )
+                    }
+
+                    if (item.messageType === "image") {
+                        const baseUrl = "/Users/Aaron/Documents/mobile_app/messenger-project/api/files/";
+                        const imageUrl = item.imageUrl;
+                        const filename = imageUrl.split("/").pop();
+                        const source = { uri: baseUrl + filename }
                         return (
                             <Pressable
                                 key={index}
@@ -131,11 +235,16 @@ const ChatMessagesScreen = () => {
                                             maxWidth: "60%"
                                         }
                                 ]}>
-                                <Text style={{ fontSize: 13, textAlign: "left" }}>{item?.message}</Text>
+                                <View>
+                                    <Image source={source} style={{ width: 200, height: 200, borderRadius: 7 }} />
+                                </View>
                                 <Text style={{
                                     textAlign: "right",
                                     fontSize: 9,
-                                    color: "grey",
+                                    position: "absolute",
+                                    right: 10,
+                                    bottom: 7,
+                                    color: "white",
                                     marginTop: 5
                                 }}>
                                     {formatTime(item.timeStamp)} </Text>
@@ -152,7 +261,9 @@ const ChatMessagesScreen = () => {
 
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 7, marginHorizontal: 8 }}>
 
-                    <Entypo name="camera" size={24} color="gray" />
+                    <Entypo
+                        onPress={pickImage}
+                        name="camera" size={24} color="gray" />
                     <Feather name="mic" size={24} color="gray" />
                 </View>
                 <Pressable onPress={() => handleSend("text")}
