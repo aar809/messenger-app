@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, TextInput, Pressable, Image } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, TextInput, Pressable, Image, FlatListComponent } from 'react-native'
 import React, { useState, useContext, useLayoutEffect, useEffect } from 'react'
 import { Entypo } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useRef } from 'react';
 
 const ChatMessagesScreen = () => {
     const [showEmojiSelector, setShowEmojiSelector] = useState(false);
@@ -23,6 +24,21 @@ const ChatMessagesScreen = () => {
     const { recipientId } = route.params;
     const [messages, setMessages] = useState([]);
     const [selectedMessages, setSelectedMessages] = useState([]);
+    const scrollViewRef = useRef(null);
+
+    useEffect(() => {
+        scrollToBottom()
+    }, []);
+
+    const scrollToBottom = () => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollToEnd({ animated: false })
+        }
+    }
+
+    const handleContentSizeChange = () => {
+        scrollToBottom();
+    }
 
     const fetchMessages = async () => {
         try {
@@ -181,7 +197,7 @@ const ChatMessagesScreen = () => {
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
-            <ScrollView>
+            <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }} onContentSizeChange={handleContentSizeChange}>
                 {/* All the chat messages go here */}
                 {messages.map((item, index) => {
                     if (item.messageType === "text") {
