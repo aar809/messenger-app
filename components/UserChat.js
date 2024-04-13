@@ -15,7 +15,7 @@ const UserChat = ({ item }) => {
             const response = await fetch(`http://localhost:8000/messages/${userId}/${item._id}`);
             const data = await response.json();
             if (response.ok) {
-                console.log("messages", data)
+                // console.log("messages", data)
                 setMessages(data)
             } else {
                 console.log("Error fetching messages", response.status.message)
@@ -29,7 +29,7 @@ const UserChat = ({ item }) => {
         fetchMessages();
     }, [])
 
-    console.log("messages", messages)
+    // console.log("messages", messages)
     const getLastMessage = () => {
         const userMessages = messages.filter((message) => message.messageType === "text");
         const n = userMessages.length;

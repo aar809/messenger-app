@@ -288,10 +288,11 @@ app.get("/friends/:userId", async (req, res) => {
                 return res.status(400).json({ message: "User not found" })
             }
             const friendIds = user.friends.map((friend) => friend._id);
+            console.log("friendIds", friendIds);
             res.status(200).json(friendIds)
         })
     } catch (error) {
-        console.log(error);
+        console.log("friends error", error);
         res.status(500).json({ error: "Internal Server Error" })
     }
 

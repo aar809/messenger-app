@@ -11,13 +11,13 @@ const User = ({ item }) => {
     useEffect(() => {
         const fetchFriendRequests = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/friend-request/sent/${userId}`);
+                const response = await fetch(`http://localhost:8000/friend-requests/sent/${userId}`);
                 const data = await response.json();
                 if (response.ok) {
                     console.log("Friend requests", data)
                     setFriendRequests(data)
                 } else {
-                    console.log("Error fetching friend requests", response.status.message)
+                    console.log("Error fetching friend requests1", response.status)
                 }
             } catch (error) {
                 console.log("Error fetching friend requests", error)
@@ -35,7 +35,7 @@ const User = ({ item }) => {
                     console.log("User friends", data)
                     setUserFriends(data)
                 } else {
-                    console.log("Error fetching user friends", response.status.message)
+                    console.log("Error fetching user friends1", response.status)
                 }
             } catch (error) {
                 console.log("Error fetching user friends", error)
@@ -61,8 +61,8 @@ const User = ({ item }) => {
             console.log("Error sending friend request", error)
         }
     }
-    console.log("User friends:", userFriends)
-    console.log("Friend requests:", friendRequests)
+    console.log("User friendsss:", userFriends)
+    console.log("Friend requestssss:", friendRequests)
     return (
         <Pressable style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
             {/* <Text>User here</Text> */}

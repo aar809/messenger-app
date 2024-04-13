@@ -12,7 +12,7 @@ const FriendsScreen = () => {
     }, [])
 
 
-    console.log("Friend requests3", friendRequests)
+    console.log("Friend requests (friends screen)", friendRequests)
 
     // write the fetchFriendRequests function here and populate friendRequestsData array with response.data (_id, name, email, image)
     const fetchFriendRequests = async () => {
@@ -36,7 +36,7 @@ const FriendsScreen = () => {
 
     return (
         <View style={{ padding: 10, marginHorizontal: 12 }}>
-            {friendRequests.length > 0 && <Text>Friend Requestsss</Text>}
+            {friendRequests.length > 0 ? <Text>Friend Requests</Text> : <Text>You don't have any new friend requests!😀</Text>}
             {friendRequests.map((item, index) => (
                 <FriendRequest
                     key={index}
