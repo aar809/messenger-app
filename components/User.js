@@ -10,6 +10,7 @@ const User = ({ item }) => {
     const [requestSent, setRequestSent] = useState(false)
     const [friendRequests, setFriendRequests] = useState([]);
     const [userFriends, setUserFriends] = useState([])
+    const [acceptedFriends, setAcceptedFriends] = useState([])
 
     useEffect(() => {
         const fetchFriendRequests = async () => {
@@ -31,9 +32,13 @@ const User = ({ item }) => {
 
     useEffect(() => {
         const fetchUserFriends = async () => {
+            console.log("here1")
             try {
                 const response = await fetch(`${API_URL}/friends/${userId}`);
+                // const text = await response.text();
+                // console.log("text", text);
                 const data = await response.json();
+                console.log("data123", data)
                 if (response.ok) {
                     console.log("User friends", data)
                     setUserFriends(data)
@@ -46,6 +51,25 @@ const User = ({ item }) => {
         }
         fetchUserFriends();
     }, [])
+
+    useEffect(() => {
+        const FetchAcceptedFriendsList = async () => {
+            try {
+                const response = await fetch(`${API_URL}/accepted-friends/${userId}`)
+                const data = await response.json();
+                if (response.ok) {
+                    const friendIds = data.map(friend => friend._id);
+                    setAcceptedFriends(friendIds)
+                    setUserFriends(friendIds)
+                }
+            } catch (error) {
+                console.log("error ChatsScreen2", error)
+            }
+        }
+        FetchAcceptedFriendsList();
+    }, [])
+    console.log("Accepted friends", acceptedFriends)
+
 
     const sendFriendRequest = async (currentUserId, selectedUserId) => {
         console.log("pressed")

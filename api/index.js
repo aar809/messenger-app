@@ -293,6 +293,7 @@ app.get("/friends/:userId", async (req, res) => {
         const { userId } = req.params;
         User.findById(userId).populate("friends").then((user) => {
             if (!user) {
+                console.log("User not found")
                 return res.status(400).json({ message: "User not found" })
             }
             const friendIds = user.friends.map((friend) => friend._id);

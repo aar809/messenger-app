@@ -39,7 +39,7 @@ const UserChat = ({ item }) => {
         return userMessages[n - 1];
     }
     const lastMessage = getLastMessage(messages);
-    console.log(lastMessage)
+    console.log("lastMessage", lastMessage)
 
     // messages[messages.length - 1]
     const formatTime = (timeStamp) => {

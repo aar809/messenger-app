@@ -24,7 +24,7 @@ console.log("Hi")
 const HomeScreen = () => {
     const navigation = useNavigation()
     const { userId, setUserId } = useContext(UserType)
-    const [users, setUsers] = useState(["test", "tests"]);
+    const [users, setUsers] = useState([]);
     const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
     useLayoutEffect(() => {
