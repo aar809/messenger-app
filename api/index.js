@@ -288,6 +288,7 @@ app.get("/friend-requests/sent/:userId", async (req, res) => {
 })
 
 app.get("/friends/:userId", async (req, res) => {
+    console.log("friends api - made it here")
     try {
         const { userId } = req.params;
         User.findById(userId).populate("friends").then((user) => {

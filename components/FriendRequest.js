@@ -4,8 +4,8 @@ import { UserType } from '../UserContext'
 import { useNavigation } from '@react-navigation/native'
 
 // const API_URL = "http://localhost:8000"; // Add this line
-const API_URL = "https://sportmatch-mobile-server.fly.dev"
-
+// const API_URL = "https://sportmatch-mobile-server.fly.dev"
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
     const { userId, setUserId } = useContext(UserType)

@@ -2,7 +2,8 @@ import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import { UserType } from '../UserContext';
 
-const API_URL = "https://sportmatch-mobile-server.fly.dev"
+// const API_URL = "https://sportmatch-mobile-server.fly.dev"
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const User = ({ item }) => {
     const { userId, setUserId } = useContext(UserType)

@@ -11,19 +11,27 @@ import { decode as base64Decode } from 'base-64';
 // import jwt from "jsonwebtoken"
 import User from '../components/User';
 import axios from 'axios';
+// import Constants from 'expo-constants';
+// const API_URL = Constants.manifest.extra.apiUrl;
+// import { getConfig } from 'expo-config';
+// const { extra } = getConfig();
+// const API_URL = extra.apiUrl;
+
 
 console.log("Hi")
-const API_URL = "https://sportmatch-mobile-server.fly.dev"
+// const API_URL = "https://sportmatch-mobile-server.fly.dev"
 
 const HomeScreen = () => {
     const navigation = useNavigation()
     const { userId, setUserId } = useContext(UserType)
     const [users, setUsers] = useState(["test", "tests"]);
+    const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: "",
             headerLeft: () => (
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>Swift Chat</Text>
+                <Text style={{ fontSize: 16, fontWeight: "bold" }}>Swift Chat (All Users)</Text>
             ),
             headerRight: () => (
                 <Text style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>

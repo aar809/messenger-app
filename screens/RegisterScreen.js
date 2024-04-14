@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 
-const API_URL = "https://sportmatch-mobile-server.fly.dev"
+// const API_URL = "https://sportmatch-mobile-server.fly.dev"
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const RegisterScreen = () => {
     const [email, setEmail] = useState("")

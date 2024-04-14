@@ -4,7 +4,8 @@ import { useNavigation } from '@react-navigation/native'
 import { useContext, useEffect, useState } from 'react'
 import { UserType } from '../UserContext'
 
-const API_URL = "https://sportmatch-mobile-server.fly.dev"
+// const API_URL = "https://sportmatch-mobile-server.fly.dev"
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const UserChat = ({ item }) => {
     const navigation = useNavigation()

@@ -4,6 +4,9 @@ import axios from 'axios'
 import { UserType } from '../UserContext'
 import FriendRequest from '../components/FriendRequest'
 
+// const API_URL = "https://sportmatch-mobile-server.fly.dev"
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
 const FriendsScreen = () => {
     const { userId, setUserId } = useContext(UserType)
     const [friendRequests, setFriendRequests] = useState([])
@@ -16,7 +19,7 @@ const FriendsScreen = () => {
 
     // write the fetchFriendRequests function here and populate friendRequestsData array with response.data (_id, name, email, image)
     const fetchFriendRequests = async () => {
-        const url = `http://localhost:8000/friend-request/${userId}`
+        const url = `${API_URL}/friend-request/${userId}`
         try {
             const response = await axios.get(url)
             if (response.status === 200) {
