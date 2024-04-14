@@ -23,19 +23,27 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.achan809.messengerproject"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.achan809.messengerproject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "apiUrl": "@env:API_URL"
+      "apiUrl": "@env:API_URL",
+      "eas": {
+        "projectId": "56135f81-e430-4ad4-a10d-209da8be8f9b"
+      }
     }
   }
 }
