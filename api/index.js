@@ -7,7 +7,10 @@ const multer = require("multer")
 const LocalStrategy = require("passport-local").Strategy
 
 const app = express();
-const port = 8000;
+// const port = 8000;
+// const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
+
 const cors = require("cors");
 app.use(cors());
 
@@ -28,9 +31,13 @@ mongoose.connect(
     console.log("Error connecting to Mongo Db", err)
 });
 
-app.listen(port, () => {
-    console.log("server running on port 8000");
-})
+// app.listen(port, () => {
+//     console.log("server running on port 8000");
+// })
+
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on port ${port}`);
+});
 
 const User = require("./models/user")
 const Message = require("./models/message")

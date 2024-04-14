@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 
+const API_URL = "https://sportmatch-mobile-server.fly.dev"
 
 const RegisterScreen = () => {
     const [email, setEmail] = useState("")
@@ -18,7 +19,7 @@ const RegisterScreen = () => {
             image: image
         }
         //send a POST request to the backend API to register the user
-        axios.post("http://localhost:8000/register", user).then((response) => {
+        axios.post(`${API_URL}/register`, user).then((response) => {
             console.log(response)
             Alert.alert(
                 "Registration successful",

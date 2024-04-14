@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import { UserType } from '../UserContext';
 
+const API_URL = "https://sportmatch-mobile-server.fly.dev"
+
 const User = ({ item }) => {
     const { userId, setUserId } = useContext(UserType)
     const [requestSent, setRequestSent] = useState(false)
@@ -11,7 +13,7 @@ const User = ({ item }) => {
     useEffect(() => {
         const fetchFriendRequests = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/friend-requests/sent/${userId}`);
+                const response = await fetch(`${API_URL}/friend-requests/sent/${userId}`);
                 const data = await response.json();
                 if (response.ok) {
                     console.log("Friend requests", data)
@@ -29,7 +31,7 @@ const User = ({ item }) => {
     useEffect(() => {
         const fetchUserFriends = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/friends/${userId}`);
+                const response = await fetch(`${API_URL}/friends/${userId}`);
                 const data = await response.json();
                 if (response.ok) {
                     console.log("User friends", data)
@@ -47,7 +49,7 @@ const User = ({ item }) => {
     const sendFriendRequest = async (currentUserId, selectedUserId) => {
         console.log("pressed")
         try {
-            const response = await fetch("http://localhost:8000/friend-request", {
+            const response = await fetch(`${API_URL}/friend-request`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

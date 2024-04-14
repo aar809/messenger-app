@@ -5,6 +5,8 @@ import { UserType } from '../UserContext';
 import { useNavigation } from '@react-navigation/native';
 import UserChat from '../components/UserChat';
 
+const API_URL = "https://sportmatch-mobile-server.fly.dev"
+
 const ChatsScreen2 = () => {
     const [acceptedFriends, setAcceptedFriends] = useState([])
     const { userId, setUserId } = useContext(UserType)
@@ -13,13 +15,13 @@ const ChatsScreen2 = () => {
     useEffect(() => {
         const FetchAcceptedFriendsList = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/accepted-friends/${userId}`)
+                const response = await fetch(`${API_URL}/accepted-friends/${userId}`)
                 const data = await response.json();
                 if (response.ok) {
                     setAcceptedFriends(data)
                 }
             } catch (error) {
-                console.log("error", error)
+                console.log("error ChatsScreen2", error)
             }
         }
         FetchAcceptedFriendsList();

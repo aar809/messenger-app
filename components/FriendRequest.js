@@ -3,6 +3,9 @@ import React, { useContext } from 'react'
 import { UserType } from '../UserContext'
 import { useNavigation } from '@react-navigation/native'
 
+// const API_URL = "http://localhost:8000"; // Add this line
+const API_URL = "https://sportmatch-mobile-server.fly.dev"
+
 
 const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
     const { userId, setUserId } = useContext(UserType)
@@ -11,7 +14,7 @@ const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
     const acceptRequest = async (friendRequestId) => {
         console.log("Accept Pressed")
         try {
-            const response = await fetch("http://localhost:8000/friend-request/accept", {
+            const response = await fetch(`${API_URL}/friend-request/accept`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

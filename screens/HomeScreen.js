@@ -13,6 +13,8 @@ import User from '../components/User';
 import axios from 'axios';
 
 console.log("Hi")
+const API_URL = "https://sportmatch-mobile-server.fly.dev"
+
 const HomeScreen = () => {
     const navigation = useNavigation()
     const { userId, setUserId } = useContext(UserType)
@@ -43,7 +45,7 @@ const HomeScreen = () => {
             const userId = decodedToken.userId;
             setUserId(userId);
             console.log("setUserId", userId)
-            axios.get(`http://localhost:8000/users/${userId}`).then((response) => {
+            axios.get(`${API_URL}/users/${userId}`).then((response) => {
                 setUsers(response.data)
                 console.log("users", response.data)
             })

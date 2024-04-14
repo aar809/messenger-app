@@ -13,6 +13,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRef } from 'react';
 
+const API_URL = "https://sportmatch-mobile-server.fly.dev"
+
+
 const ChatMessagesScreen = () => {
     const [showEmojiSelector, setShowEmojiSelector] = useState(false);
     const [recipientData, setRecipientData] = useState()
@@ -43,7 +46,7 @@ const ChatMessagesScreen = () => {
     const fetchMessages = async () => {
         try {
             // console.log("yo", userId, recipientId)
-            const response = await fetch(`http://localhost:8000/messages/${userId}/${recipientId}`);
+            const response = await fetch(`${API_URL}/messages/${userId}/${recipientId}`);
             const data = await response.json();
             if (response.ok) {
                 // console.log("messages", data)
@@ -63,7 +66,7 @@ const ChatMessagesScreen = () => {
     useEffect(() => {
         const fetchRecipientData = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/user/${recipientId}`);
+                const response = await fetch(`${API_URL}/user/${recipientId}`);
                 const data = await response.json();
                 setRecipientData(data);
                 // console.log("recipientData", data);
@@ -96,7 +99,7 @@ const ChatMessagesScreen = () => {
                 formData.append("messageType", "text")
                 formData.append("messageText", message)
             }
-            const response = await fetch("http://localhost:8000/messages", {
+            const response = await fetch(`${API_URL}/messages`, {
                 method: "POST",
                 body: formData
             })
@@ -143,7 +146,7 @@ const ChatMessagesScreen = () => {
 
     const deleteMessages = async (messageIds) => {
         try {
-            const response = await fetch("http://localhost:8000/delete-messages", {
+            const response = await fetch(`${API_URL}/delete-messages`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

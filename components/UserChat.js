@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native'
 import { useContext, useEffect, useState } from 'react'
 import { UserType } from '../UserContext'
 
+const API_URL = "https://sportmatch-mobile-server.fly.dev"
+
 const UserChat = ({ item }) => {
     const navigation = useNavigation()
     const { userId, setUserId } = useContext(UserType)
@@ -12,7 +14,7 @@ const UserChat = ({ item }) => {
     const fetchMessages = async () => {
         try {
             // console.log("yo", userId, recipientId)
-            const response = await fetch(`http://localhost:8000/messages/${userId}/${item._id}`);
+            const response = await fetch(`${API_URL}/messages/${userId}/${item._id}`);
             const data = await response.json();
             if (response.ok) {
                 // console.log("messages", data)
